@@ -51,7 +51,7 @@
    >说明:
    > 1. 如果没有腾讯云账号，请先[注册新账号](https://cloud.tencent.com/register)。
    > 2. 如果已有腾讯云账号，可以在[ API 密钥管理](https://console.cloud.tencent.com/cam/capi) 中获取**SecretId**和**SecretKey**。
-   > 3. 目前tcb仅支持在广州、上海、北京创建db，部署时请注意yaml文件里的地域设置，其他地域可能会报错。
+   > 3. 目前sls支持在国内区域访问tcb，部署时请注意yaml文件里的地域设置，其他地域可能会报错。
    
    3.在`function->src`文件夹目录下，通过以下命令安装所需依赖：
    ```bash
