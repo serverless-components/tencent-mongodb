@@ -3,8 +3,7 @@ const tcb = require('tcb-admin-node')
 const app = tcb.init({
 	secretId: process.env.SecretId,
 	secretKey: process.env.SecretKey,
-	env: process.env.MongoId,
-	serviceUrl: 'https://tcb-admin.tencentcloudapi.com/admin'
+	env: process.env.MongoId
 })
 
 const db = app.database()
