@@ -1,0 +1,31 @@
+component: scf
+name: mongoDBDemoSCF
+org: anycodes
+app: mongoDBAPP
+stage: dev
+
+inputs:
+  name: MongoDBDemo
+  src: ./src
+  runtime: Nodejs8.9
+  region: ap-guangzhou
+  handler: index.main
+  environment:
+    variables:
+      SecretId:  请填入您的SecretId
+      SecretKey: 请填入您的SecretKey
+      MongoId: ${output:${stage}:${app}:mongoDBDemoMongo.EnvId}
+  events:
+    - apigw:
+        name: MongoDBDemo
+        parameters:
+          protocols:
+            - http
+            - https
+          serviceName:
+          description: The service of Serverless Framework - MongoDB
+          environment: release
+          endpoints:
+            - path: /users
+              enableCORS: TRUE
+              method: POST

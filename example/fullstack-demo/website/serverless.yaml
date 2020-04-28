@@ -1,0 +1,18 @@
+component: website
+name: mongoDBDemoWebsite
+org: anycodes
+app: mongoDBAPP
+stage: dev
+
+inputs:
+  src:
+    src: ./src
+    hook: npm run build
+    index: index.html
+    error: index.html
+    envPath: ./
+  region: ap-guangzhou
+  bucketName: my-bucket
+  protocol: http
+  env:
+    apiUrl: ${output:${stage}:${app}:mongoDBDemoSCF.Triggers.apigw.0}

@@ -1,0 +1,8 @@
+component: mongodb
+name: mongodemo
+org: test
+app: mongoApp
+stage: dev
+
+inputs:
+  name: test

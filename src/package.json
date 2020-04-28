@@ -1,0 +1,18 @@
+{
+  "name": "@serverless/mongodb",
+  "version": "0.0.1",
+  "main": "./serverless.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --fix --cache"
+  },
+  "author": "anycodes",
+  "license": "Apache",
+  "dependencies": {
+    "tencent-cloud-sdk": "^0.0.7",
+    "string-random": "^0.1.3"
+  }
+}
