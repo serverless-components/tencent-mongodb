@@ -49,8 +49,6 @@
    ```bash
    $ npm install
    ```
-   >注意: 
-   目前TCB端仅支持每月最多创建销毁4次环境，为避免因创建次数超限而创建失败，您可在**function->serverless.yaml**文件中的"MongoId"参数中指定已创建的环境ID完成部署
    
    访问命令行输出的 website url，即可查看您的 Serverless 站点。
    
@@ -111,10 +109,15 @@
    TENCENT_SECRET_ID=123
    TENCENT_SECRET_KEY=123
    ```
-    
-     
+        
    #### 更多组件
    您可在[Serverless Component Repo](https://github.com/serverless/components)中查看更多组件信息
+   
+   #### Q&A
+   **报错 "EnvId is invalid"是什么原因？**
+   
+   TCB DB组件目前默认为用户创建一个免费的TCB环境，如果您已有免费环境，通过serverless component再次创建会失败报错，您可删去db文件夹，通过配置demo目录中**function->serverless.yaml**中的**MongoId**参数，输入您已有TCB环境的ID，完成项目的部署。
+   
 
 
 
