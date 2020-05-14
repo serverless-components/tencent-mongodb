@@ -38,15 +38,7 @@
    $ serverless create --template-url https://github.com/serverless-components/tencent-mongodb/tree/master/example/fullstack-demo
    ```
    
-   2.在项目根目录下中创建`.env`文件，在其中配置对应的腾讯云 SecretId 和 SecretKey 信息：
-    
-   ```text
-   # .env
-   TENCENT_SECRET_ID=123
-   TENCENT_SECRET_KEY=123
-   ```
-    
-   找到**function->serverless.yaml**文件，填入自己的 SecretId 和 SecretKey。
+   2.在项目目录中找到**function->serverless.yaml**文件，填入自己的 SecretId 和 SecretKey。
    
    >说明:
    > 1. 如果没有腾讯云账号，请先[注册新账号](https://cloud.tencent.com/register)。
@@ -57,9 +49,13 @@
    ```bash
    $ npm install
    ```
+   >注意: 
+   目前TCB端仅支持每月最多创建销毁4次环境，为避免因创建次数超限而创建失败，您可在**function->serverless.yaml**文件中的"MongoId"参数中指定已创建的环境ID完成部署
+   
+   访问命令行输出的 website url，即可查看您的 Serverless 站点。
    
    ### 部署
-   配置完成后，进入含有.env文件的根目录下，通过以下命令进行部署，创建一个新的云开发环境，将后台代码部署到SCF云函数平台，并通过website组件部署静态网站：
+   配置完成后，在根目录下通过以下命令进行部署，创建一个新的云开发环境，将后台代码部署到SCF云函数平台，并通过website组件部署静态网站：
    
    ```bash
    $ sls deploy --all
@@ -105,6 +101,18 @@
    $ sls remove --debug
    ```
    
+   #### 权限配置
+   tcb组件支持扫码一键授权，您也可通过本地配置.env文件完成权限配置，具体步骤如下：
+   
+   在项目根目录下中创建`.env`文件，在其中配置对应的腾讯云 SecretId 和 SecretKey 信息：
+    
+   ```text
+   # .env
+   TENCENT_SECRET_ID=123
+   TENCENT_SECRET_KEY=123
+   ```
+    
+     
    #### 更多组件
    您可在[Serverless Component Repo](https://github.com/serverless/components)中查看更多组件信息
 
