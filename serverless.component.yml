@@ -1,10 +1,10 @@
 name: mongodb
-version: 0.0.1
-author: anycodes
-org: anycodes
+version: 0.0.2
+author: Tencent Cloud Inc.
+org: Tencent Cloud Inc.
 description: Deploys Tencent MongoDB.
 keywords: tencent, serverless, MongoDB
-repo: https://github.com/serverless-tencent/tencent-mongodb
-readme: https://github.com/serverless-tencent/tencent-mongodb
+repo: https://github.com/serverless-components/tencent-mongodb
+readme: https://github.com/serverless-components/tencent-mongodb/tree/master/README.md
 license: MIT
 main: ./src

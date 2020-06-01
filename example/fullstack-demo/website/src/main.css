@@ -1,4 +1,4 @@
-body{
+body {
   margin: 0;
   padding: 0;
 }
@@ -7,7 +7,7 @@ body{
 }
 
 .bg-img {
-  background: url("./images/images.jpg") center center/cover no-repeat;
+  background: url('./images/images.jpg') center center/cover no-repeat;
 }
 .p-t-165 {
   padding-top: 165px;
@@ -20,14 +20,14 @@ body{
   max-width: 720px;
 }
 
-#card{
+#card {
   background: rgba(50, 68, 136, 0.753);
   height: 310px;
   border-radius: 10px;
   text-align: center;
 }
 
-#titles{
+#titles {
   font-size: 35px;
   font-style: Helvetica;
   margin: 0 auto;
@@ -44,17 +44,16 @@ body{
 }
 
 .row {
-    display: flex;
-  }
+  display: flex;
+}
 .col-1 {
-    width: calc(70% / 2);
-    margin-left: 20px
+  width: calc(70% / 2);
+  margin-left: 20px;
 }
 .col-2 {
   width: calc(70% / 2);
-  margin-left: 60px
+  margin-left: 60px;
 }
-
 
 button {
   outline: none;
@@ -62,7 +61,6 @@ button {
   border: none;
   font-family: inherit;
 }
-
 
 .btn-submit {
   display: block;
@@ -83,7 +81,6 @@ button {
   background: #00994b;
 }
 
-
 input,
 textarea {
   outline: none;
@@ -99,7 +96,7 @@ textarea {
   width: 71%;
   margin-top: 15px;
   margin-bottom: 15px;
-  margin-left:70px;
+  margin-left: 70px;
   background: #ffffff;
   border-radius: 10px;
   padding: 9px 48px;
@@ -111,7 +108,7 @@ textarea {
   width: 80%;
   margin-top: 15px;
   margin-bottom: 15px;
-  margin-left:50px;
+  margin-left: 50px;
   background: #ffffff;
   border-radius: 10px;
   padding: 9px 48px;
@@ -124,10 +121,10 @@ textarea {
   padding-top: 0px;
   text-transform: uppercase;
   color: #808080;
-  font-family: "Poppins", "Arial", "Helvetica Neue", sans-serif;
+  font-family: 'Poppins', 'Arial', 'Helvetica Neue', sans-serif;
 }
 
-#userList{
+#userList {
   font-size: 20px;
   color: #fff;
   background: rgba(56, 74, 141, 0.719);

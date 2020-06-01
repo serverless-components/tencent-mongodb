@@ -12,7 +12,7 @@ inputs:
   handler: index.main
   environment:
     variables:
-      SecretId:  请填入您的SecretId
+      SecretId: 请填入您的SecretId
       SecretKey: 请填入您的SecretKey
       MongoId: ${output:${stage}:${app}:mongoDBDemoMongo.EnvId}
   events:

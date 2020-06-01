@@ -1,24 +1,28 @@
-const {Component} = require('@serverless/core')
+const { Component } = require('@serverless/core')
 const Tcb = require('tencent-cloud-sdk').tcb
 const stringRandom = require('string-random')
 
-class Express extends Component {
+class ServerlessComponent extends Component {
+  getCredentials() {
+    const { tmpSecrets } = this.credentials.tencent
 
-  async deploy(inputs) {
-    console.log(`Deploying Tencent MongoDB ...`)
-
-    // 获取腾讯云密钥信息
-    if (!this.credentials.tencent.tmpSecrets) {
+    if (!tmpSecrets || !tmpSecrets.TmpSecretId) {
       throw new Error(
         'Cannot get secretId/Key, your account could be sub-account or does not have access, please check if SLS_QcsRole role exists in your account, and visit https://console.cloud.tencent.com/cam to bind this role to your account.'
       )
     }
-    const credentials = {
-      SecretId: this.credentials.tencent.tmpSecrets.TmpSecretId,
-      SecretKey: this.credentials.tencent.tmpSecrets.TmpSecretKey,
-      Token: this.credentials.tencent.tmpSecrets.Token
-    }
 
+    return {
+      SecretId: tmpSecrets.TmpSecretId,
+      SecretKey: tmpSecrets.TmpSecretKey,
+      Token: tmpSecrets.Token
+    }
+  }
+
+  async deploy(inputs) {
+    console.log(`Deploying Tencent MongoDB ...`)
+
+    const credentials = this.getCredentials()
 
     // 默认值
     const region = inputs.region || 'ap-guangzhou'
@@ -32,15 +36,6 @@ class Express extends Component {
       return this.state
     }
 
-    // 创建ENV
-    console.log({
-      Action: 'CreateEnv',
-      Version: '2018-06-08',
-      Region: region,
-      EnvId: envId,
-      Alias: alias,
-      Source: 'qcloud'
-    })
     const createEnvResult = await tcb.request({
       Action: 'CreateEnv',
       Version: '2018-06-08',
@@ -79,32 +74,19 @@ class Express extends Component {
 
     await this.save()
 
-    console.log(`Deployed Tencent MongoDB ...`)
+    console.log(`Deployed Tencent MongoDB.`)
 
     return output
-
   }
 
-  async remove(inputs = {}) {
+  async remove() {
     console.log(`Removing Tencent MongoDB ...`)
-
-    // 获取腾讯云密钥信息
-    if (!this.credentials.tencent.tmpSecrets) {
-      throw new Error(
-        'Cannot get secretId/Key, your account could be sub-account or does not have access, please check if SLS_QcsRole role exists in your account, and visit https://console.cloud.tencent.com/cam to bind this role to your account.'
-      )
-    }
-    const credentials = {
-      SecretId: this.credentials.tencent.tmpSecrets.TmpSecretId,
-      SecretKey: this.credentials.tencent.tmpSecrets.TmpSecretKey,
-      Token: this.credentials.tencent.tmpSecrets.Token
-    }
-
+    const credentials = this.getCredentials()
 
     // 创建TCB对象
     const tcb = new Tcb(credentials)
 
-    const removeResult = await tcb.request({
+    await tcb.request({
       Action: 'DestroyEnv',
       Version: '2018-06-08',
       Region: this.state.Region,
@@ -116,4 +98,4 @@ class Express extends Component {
   }
 }
 
-module.exports = Express
+module.exports = ServerlessComponent
