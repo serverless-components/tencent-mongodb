@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "tencent-cloud-sdk": "^0.0.7",
-    "tencent-component-toolkit": "^1.11.2",
+    "tencent-component-toolkit": "^1.11.4",
     "string-random": "^0.1.3"
   }
 }
