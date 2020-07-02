@@ -1,20 +1,22 @@
-component: scf
-name: mongoDBDemoSCF
-org: anycodes
-app: mongoDBAPP
+org: serverless
+app: fullstack-nosql
 stage: dev
+component: scf
+name: fullstack-backend
 
 inputs:
-  name: MongoDBDemo
+  name: ${name}
   src: ./src
-  runtime: Nodejs8.9
+  runtime: Nodejs10.15
   region: ap-guangzhou
   handler: index.main
   environment:
     variables:
-      SecretId: 请填入您的SecretId
-      SecretKey: 请填入您的SecretKey
-      MongoId: ${output:${stage}:${app}:mongoDBDemoMongo.EnvId}
+      # 请填入您的SecretId
+      SecretId: ${env:TENCENT_SECRET_ID}
+      # 请填入您的SecretKey
+      SecretKey: ${env:TENCENT_SECRET_KEY}
+      MongoId: ${output:${stage}:${app}:fullstack-db.EnvId}
   events:
     - apigw:
         name: MongoDBDemo

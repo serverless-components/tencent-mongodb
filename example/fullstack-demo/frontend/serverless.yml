@@ -1,7 +1,7 @@
 component: website
-name: mongoDBDemoWebsite
-org: anycodes
-app: mongoDBAPP
+name: fullstack-frontend
+org: serverless
+app: fullstack-nosql
 stage: dev
 
 inputs:
@@ -15,4 +15,4 @@ inputs:
   bucketName: my-bucket
   protocol: http
   env:
-    apiUrl: ${output:${stage}:${app}:mongoDBDemoSCF.Triggers.apigw.0}
+    apiUrl: ${output:${stage}:${app}:fullstack-backend.Triggers.apigw.0}

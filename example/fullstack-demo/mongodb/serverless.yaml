@@ -1,8 +1,0 @@
-component: mongodb
-name: mongoDBDemoMongo
-org: anycodes
-app: mongoDBAPP
-stage: dev
-
-inputs:
-  name: Mydemo

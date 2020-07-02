@@ -1,7 +1,7 @@
 component: mongodb
-name: mongodemo
-org: test
-app: mongoApp
+name: mongoDemo
+org: orgDemo
+app: appDemo
 stage: dev
 
 inputs:
