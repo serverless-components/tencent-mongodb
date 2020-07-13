@@ -38,31 +38,47 @@ class ServerlessComponent extends Component {
       return this.state
     }
 
-    const createEnvResult = await tcb.request({
-      Action: 'CreateEnv',
-      Version: '2018-06-08',
-      Region: region,
-      EnvId: envId,
-      Alias: alias,
-      Source: 'qcloud'
-    })
-
-    if (JSON.stringify(createEnvResult).includes('Error')) {
-      throw new TypeError('API_MONGODB_DEPLOY', JSON.stringify(createEnvResult))
+    try {
+      const createEnvResult = await tcb.request({
+        Action: 'CreateEnv',
+        Version: '2018-06-08',
+        Region: region,
+        EnvId: envId,
+        Alias: alias,
+        Source: 'qcloud'
+      })
+      if (createEnvResult.Response && createEnvResult.Response.Error) {
+        throw new TypeError(
+          'API_MONGODB_CreateEnv',
+          JSON.stringify(createEnvResult),
+          null,
+          createEnvResult.Response.RequestId
+        )
+      }
+    } catch (e) {
+      throw new TypeError('API_MONGODB_CreateEnv', e.message, e.stack, e.reqId)
     }
 
-    // 绑定免费版本
-    const createPostpayPackageResult = await tcb.request({
-      Action: 'CreatePostpayPackage',
-      Version: '2018-06-08',
-      Region: region,
-      EnvId: envId,
-      FreeQuota: 'basic',
-      Source: 'qcloud'
-    })
+    try {
+      const createPostpayPackageResult = await tcb.request({
+        Action: 'CreatePostpayPackage',
+        Version: '2018-06-08',
+        Region: region,
+        EnvId: envId,
+        FreeQuota: 'basic',
+        Source: 'qcloud'
+      })
 
-    if (JSON.stringify(createEnvResult).includes('Error')) {
-      throw new TypeError('API_MONGODB_DEPLOY', JSON.stringify(createPostpayPackageResult))
+      if (createPostpayPackageResult.Response && createPostpayPackageResult.Response.Error) {
+        throw new TypeError(
+          'API_MONGODB_CreatePostpayPackage',
+          JSON.stringify(createPostpayPackageResult),
+          null,
+          createPostpayPackageResult.Response.RequestId
+        )
+      }
+    } catch (e) {
+      throw new TypeError('API_MONGODB_CreatePostpayPackage', e.message, e.stack, e.reqId)
     }
 
     const output = {
@@ -88,13 +104,20 @@ class ServerlessComponent extends Component {
     // 创建TCB对象
     const tcb = new Tcb(credentials)
 
-    await tcb.request({
-      Action: 'DestroyEnv',
-      Version: '2018-06-08',
-      Region: this.state.Region,
-      EnvId: this.state.EnvId,
-      IsForce: false
-    })
+    try {
+      const res = await tcb.request({
+        Action: 'DestroyEnv',
+        Version: '2018-06-08',
+        Region: this.state.Region,
+        EnvId: this.state.EnvId,
+        IsForce: false
+      })
+      if (res.Response && res.Response.Error) {
+        console.log(`DestroyEnv: ${JSON.stringify(res.Response)}`)
+      }
+    } catch (e) {
+      console.log(`DestroyEnv: ${e.message}`)
+    }
 
     console.log(`Removed Tencent MongoDB ...`)
   }

@@ -1,8 +1,8 @@
 name: mongodb
 version: 0.0.3
-author: Tencent Cloud Inc.
-org: Tencent Cloud Inc.
-description: Deploys Tencent MongoDB.
+author: Tencent Cloud, Inc.
+org: Tencent Cloud, Inc.
+description: Deploy Tencent MongoDB.
 keywords: tencent, serverless, MongoDB
 repo: https://github.com/serverless-components/tencent-mongodb
 readme: https://github.com/serverless-components/tencent-mongodb/tree/master/README.md

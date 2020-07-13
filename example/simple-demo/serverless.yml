@@ -1,8 +1,8 @@
-component: mongodb
-name: mongoDemo
 org: orgDemo
 app: appDemo
 stage: dev
+component: mongodb
+name: mongoDemo
 
 inputs:
-  name: test
+  name: mongo-test
