@@ -5,4 +5,4 @@ app: fullstack-nosql
 stage: dev
 
 inputs:
-  name: Mydemo
+  name: mongo-demo
