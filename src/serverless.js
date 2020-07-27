@@ -21,6 +21,59 @@ class ServerlessComponent extends Component {
     }
   }
 
+  async getFreeEnv(tcbClient, region) {
+    let freeEnv = null
+    const res1 = await tcbClient.request({
+      Action: 'DescribeEnvs',
+      Version: '2018-06-08',
+      Region: region
+    })
+    if (res1.Response && res1.Response.Error) {
+      throw new TypeError(
+        'API_MONGODB_DescribeEnvs',
+        JSON.stringify(res1),
+        null,
+        res1.Response.RequestId
+      )
+    }
+    const {
+      Response: { EnvList }
+    } = res1
+
+    if (EnvList.length > 0) {
+      const res2 = await tcbClient.request({
+        Action: 'DescribeBillingInfo',
+        Version: '2018-06-08',
+        Region: 'ap-guangzhou'
+      })
+
+      if (res2.Response && res2.Response.Error) {
+        throw new TypeError(
+          'API_MONGODB_DescribeBillingInfo',
+          JSON.stringify(res2),
+          null,
+          res2.Response.RequestId
+        )
+      }
+      const {
+        Response: { EnvBillingInfoList }
+      } = res2
+
+      EnvList.forEach((item) => {
+        EnvBillingInfoList.forEach((bItem) => {
+          if (bItem.EnvId === item.EnvId && bItem.FreeQuota === 'basic') {
+            freeEnv = item
+            freeEnv.FreeQuota = 'basic'
+          }
+        })
+      })
+      if (freeEnv) {
+        return freeEnv
+      }
+    }
+    return freeEnv
+  }
+
   async deploy(inputs) {
     console.log(`Deploying Tencent MongoDB ...`)
 
@@ -34,8 +87,26 @@ class ServerlessComponent extends Component {
     // 创建TCB对象
     const tcb = new Tcb(credentials)
 
-    if (this.state.EnvId) {
-      return this.state
+    const output = {
+      Region: region,
+      Name: alias,
+      EnvId: envId,
+      FreeQuota: 'basic'
+    }
+
+    const freeEnv = await this.getFreeEnv(tcb, region)
+
+    if (freeEnv) {
+      output.Name = freeEnv.Alias
+      output.EnvId = freeEnv.EnvId
+      output.Msg =
+        '检测到您已拥有tcb免费环境，将默认使用该环境完成部署，如果您需要使用更多环境，请通过云开发控制台（https://console.cloud.tencent.com/tcb/env/index）完成资源购买'
+
+      this.state = output
+      await this.save()
+
+      console.log(`Already exist free Tencent MongoDB.`)
+      return output
     }
 
     try {
@@ -79,13 +150,6 @@ class ServerlessComponent extends Component {
       }
     } catch (e) {
       throw new TypeError('API_MONGODB_CreatePostpayPackage', e.message, e.stack, e.reqId)
-    }
-
-    const output = {
-      Region: region,
-      Name: alias,
-      EnvId: envId,
-      FreeQuota: 'basic'
     }
 
     this.state = output

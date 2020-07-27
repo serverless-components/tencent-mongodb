@@ -53,6 +53,8 @@ Components: 2.30.1
 
 ### 2. 配置
 
+> 注意：name 字段必须 `以小写字母开头，只支持数字、小写字母 和 -`
+
 在项目根目录创建 `serverless.yml` 文件，在其中进行如下配置
 
 ```bash
@@ -68,7 +70,7 @@ app: mongoDBAPP # (可选) 项目名称
 stage: dev # (可选) 用于区分环境信息，默认值是 dev
 
 inputs:
-  name: Mydemo
+  name: my-demo
 ```
 
 ### 3. 部署
@@ -82,8 +84,8 @@ serverless ⚡ framework
 
 mongoDBDemoMongo:
   Region:    ap-guangzhou
-  Name:      Mydemo
-  EnvID:     Mydemo-dyxfxv
+  Name:      my-demo
+  EnvID:     my-demo-dyxfxv
   FreeQuota: basic
 
 20s › mongoDBDemoMongo › Success
