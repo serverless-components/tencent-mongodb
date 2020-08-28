@@ -1,3 +1,10 @@
+## [0.0.6](https://github.com/serverless-components/tencent-mongodb/compare/v0.0.5...v0.0.6) (2020-08-28)
+
+
+### Bug Fixes
+
+* optimize deploy flow and error msg ([a0f1213](https://github.com/serverless-components/tencent-mongodb/commit/a0f12130740aef0149e84abeae2bf5b572a02ba5))
+
 ## [0.0.5](https://github.com/serverless-components/tencent-mongodb/compare/v0.0.4...v0.0.5) (2020-08-28)
 
 
