@@ -1,7 +1,7 @@
 const { Component } = require('@serverless/core')
 const Tcb = require('tencent-cloud-sdk').tcb
 const stringRandom = require('string-random')
-const { TypeError } = require('tencent-component-toolkit/src/utils/error')
+const { ApiError, TypeError } = require('tencent-component-toolkit/src/utils/error')
 
 class ServerlessComponent extends Component {
   getCredentials() {
@@ -21,43 +21,43 @@ class ServerlessComponent extends Component {
     }
   }
 
-  async getFreeEnv(tcbClient, region) {
-    let freeEnv = null
-    const res1 = await tcbClient.request({
-      Action: 'DescribeEnvs',
-      Version: '2018-06-08',
-      Region: region
-    })
-    if (res1.Response && res1.Response.Error) {
-      throw new TypeError(
-        'API_MONGODB_DescribeEnvs',
-        JSON.stringify(res1),
-        null,
-        res1.Response.RequestId
-      )
+  async request(client, region, options) {
+    try {
+      const { Response } = await client.request({
+        Version: '2018-06-08',
+        Region: region,
+        ...options
+      })
+      if (Response && Response.Error) {
+        throw new ApiError({
+          type: `API_MONGODB_${options.Action}`,
+          message: `${Response.Error.Message} (${Response.RequestId})`,
+          reqId: Response.RequestId,
+          code: Response.Error.Code
+        })
+      }
+      return Response
+    } catch (e) {
+      throw new ApiError({
+        type: `API_MONGODB_${options.Action}`,
+        message: e.message,
+        stack: e.stack,
+        reqId: e.reqId,
+        code: e.code
+      })
     }
-    const {
-      Response: { EnvList }
-    } = res1
+  }
+
+  async getFreeEnv(client, region) {
+    let freeEnv = null
+    const { EnvList } = await this.request(client, region, {
+      Action: 'DescribeEnvs'
+    })
 
     if (EnvList.length > 0) {
-      const res2 = await tcbClient.request({
-        Action: 'DescribeBillingInfo',
-        Version: '2018-06-08',
-        Region: 'ap-guangzhou'
+      const { EnvBillingInfoList } = await this.request(client, region, {
+        Action: 'DescribeBillingInfo'
       })
-
-      if (res2.Response && res2.Response.Error) {
-        throw new TypeError(
-          'API_MONGODB_DescribeBillingInfo',
-          JSON.stringify(res2),
-          null,
-          res2.Response.RequestId
-        )
-      }
-      const {
-        Response: { EnvBillingInfoList }
-      } = res2
 
       EnvList.forEach((item) => {
         EnvBillingInfoList.forEach((bItem) => {
@@ -67,9 +67,6 @@ class ServerlessComponent extends Component {
           }
         })
       })
-      if (freeEnv) {
-        return freeEnv
-      }
     }
     return freeEnv
   }
@@ -99,7 +96,7 @@ class ServerlessComponent extends Component {
     if (freeEnv) {
       output.Name = freeEnv.Alias
       output.EnvId = freeEnv.EnvId
-      output.Msg =
+      output.Message =
         '检测到您已拥有tcb免费环境，将默认使用该环境完成部署，如果您需要使用更多环境，请通过云开发控制台（https://console.cloud.tencent.com/tcb/env/index）完成资源购买'
 
       this.state = output
@@ -109,48 +106,21 @@ class ServerlessComponent extends Component {
       return output
     }
 
-    try {
-      const createEnvResult = await tcb.request({
-        Action: 'CreateEnv',
-        Version: '2018-06-08',
-        Region: region,
-        EnvId: envId,
-        Alias: alias,
-        Source: 'qcloud'
-      })
-      if (createEnvResult.Response && createEnvResult.Response.Error) {
-        throw new TypeError(
-          'API_MONGODB_CreateEnv',
-          JSON.stringify(createEnvResult),
-          null,
-          createEnvResult.Response.RequestId
-        )
-      }
-    } catch (e) {
-      throw new TypeError('API_MONGODB_CreateEnv', e.message, e.stack, e.reqId)
-    }
+    await this.request(tcb, region, {
+      Action: 'CreateEnv',
+      EnvId: envId,
+      Alias: alias,
+      Source: 'qcloud',
+      Channel: 'serverless_framework'
+    })
 
-    try {
-      const createPostpayPackageResult = await tcb.request({
-        Action: 'CreatePostpayPackage',
-        Version: '2018-06-08',
-        Region: region,
-        EnvId: envId,
-        FreeQuota: 'basic',
-        Source: 'qcloud'
-      })
-
-      if (createPostpayPackageResult.Response && createPostpayPackageResult.Response.Error) {
-        throw new TypeError(
-          'API_MONGODB_CreatePostpayPackage',
-          JSON.stringify(createPostpayPackageResult),
-          null,
-          createPostpayPackageResult.Response.RequestId
-        )
-      }
-    } catch (e) {
-      throw new TypeError('API_MONGODB_CreatePostpayPackage', e.message, e.stack, e.reqId)
-    }
+    await this.request(tcb, region, {
+      Action: 'CreatePostpayPackage',
+      EnvId: envId,
+      FreeQuota: 'basic',
+      Source: 'qcloud',
+      Channel: 'serverless_framework'
+    })
 
     this.state = output
 
@@ -162,28 +132,24 @@ class ServerlessComponent extends Component {
   }
 
   async remove() {
-    console.log(`Removing Tencent MongoDB ...`)
+    console.log(`Removing Tencent MongoDB`)
     const credentials = this.getCredentials()
 
     // 创建TCB对象
     const tcb = new Tcb(credentials)
 
+    const { Region, EnvId } = this.state
+
     try {
-      const res = await tcb.request({
+      await this.request(tcb, Region, {
         Action: 'DestroyEnv',
-        Version: '2018-06-08',
-        Region: this.state.Region,
-        EnvId: this.state.EnvId,
+        EnvId: EnvId,
         IsForce: false
       })
-      if (res.Response && res.Response.Error) {
-        console.log(`DestroyEnv: ${JSON.stringify(res.Response)}`)
-      }
+      console.log(`Removed Tencent MongoDB`)
     } catch (e) {
-      console.log(`DestroyEnv: ${e.message}`)
+      console.log(`DestroyEnv: ${e.message} (reqId: ${e.reqId})`)
     }
-
-    console.log(`Removed Tencent MongoDB ...`)
   }
 }
 
