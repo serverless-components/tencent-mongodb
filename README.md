@@ -63,11 +63,11 @@ $ touch serverless.yml
 
 ```yml
 # serverless.yml
-component: mongodb # (必填) 组件名称，此处为mongodb
-name: mongoDBDemoMongo # (必填) 实例名称
-org: orgDemo # (可选) 用于记录组织信息，默认值为您的腾讯云账户 appid
-app: mongoDBAPP # (可选) 项目名称
-stage: dev # (可选) 用于区分环境信息，默认值是 dev
+org: orgDemo
+app: appDemo
+stage: dev
+component: mongodb
+name: mongodbDemo
 
 inputs:
   name: my-demo
@@ -82,40 +82,30 @@ $ sls deploy
 
 serverless ⚡ framework
 
-mongoDBDemoMongo:
+mongodbDemo:
   Region:    ap-guangzhou
   Name:      my-demo
   EnvID:     my-demo-dyxfxv
   FreeQuota: basic
 
-20s › mongoDBDemoMongo › Success
+20s › mongodbDemo › Success
 ```
 
 部署时需要进行身份验证，如您的账号未 [登陆](https://cloud.tencent.com/login) 或 [注册](https://cloud.tencent.com/register) 腾讯云，您可以直接通过 `微信` 扫描命令行中的二维码进行授权登陆和注册。
 
-> 注意：
->
-> - 由于 sls 运行角色限制，需要用户登录 [访问管理角色页面](https://console.cloud.tencent.com/cam/role)，手动为**SLS_QcsRole**添加**TCBFullAccess**的策略，否则无法正常运行。
-> - 如果希望查看更多部署过程的信息，可以通过`sls deploy --debug` 命令查看部署过程中的实时日志信息，`sls`是 `serverless` 命令的缩写。
->   `sls` 是 `serverless` 命令的简写。
-> - 目前 TCB 端仅支持每月最多创建销毁 4 次环境，请谨慎创建，若超过 4 次部署将会报错。
+> 如果希望查看更多部署过程的信息，可以通过 `sls deploy --debug` 命令查看部署过程中的实时日志信息，`sls`是 `serverless` 命令的缩写。
 
-### 4. 开发调试
+### 注意！！！
 
-创建云开发环境后，您可通过入口函数直接调用数据库的 sdk，部署在云端后可以通过开发调试能力对该项目进行二次开发，从而开发一个生产应用。在本地修改和更新代码后，不需要每次都运行 `serverless deploy` 命令来反复部署。你可以直接通过 `serverless dev` 命令对本地代码的改动进行检测和自动上传。
-
-可以通过在 `serverless.yml`文件所在的目录下运行 `serverless dev` 命令开启开发调试能力。
-
-`serverless dev` 同时支持实时输出云端日志，每次部署完毕后，对项目进行访问，即可在命令行中实时输出调用日志，便于查看业务情况和排障。
-
-详情请参考[部署支持 NoSQL 数据库的全栈网站](https://github.com/serverless-components/tencent-mongodb/tree/master/example/fullstack-demo)
+1. 由于 sls 运行角色限制，需要用户登录 [访问管理角色页面](https://console.cloud.tencent.com/cam/role)，手动为 **SLS_QcsRole** 添加 **TCBFullAccess** 的策略，否则无法正常运行。
+2. 目前 TCB 端仅支持每月最多创建销毁 `4` 次环境，请谨慎创建，若超过 `4` 次部署将会报错。
 
 ### 5. 查看部署状态
 
 在`serverless.yml`文件所在的目录下，通过如下命令查看部署状态：
 
 ```
-$ serverless info
+$ sls info
 ```
 
 ### 6. 移除
